@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Faculty Management</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Function to dynamically load data when the "Read" button is pressed
+        function loadFaculties() {
+            $.ajax({
+                url: "FacultyServlet?action=read",
+                type: "GET",
+                success: function (response) {
+                    $("#facultyTable tbody").empty();
+                    $.each(response, function (index, faculty) {
+                        var row = "<tr><td>" + faculty.id + "</td><td>" + faculty.name + "</td><td>" + faculty.designation + "</td><td>" + faculty.department + "</td><td>" + faculty.email + "</td><td>" + faculty.phone + "</td><td>" + faculty.dateOfJoining + "</td></tr>";
+                        $("#facultyTable tbody").append(row);
+                    });
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        // Function to handle form submission for adding faculty
+        function addFaculty() {
+            var name = $("#name").val();
+            var designation = $("#designation").val();
+            var department = $("#department").val();
+            var email = $("#email").val();
+            var phone = $("#phone").val();
+            var dateOfJoining = $("#dateOfJoining").val();
+
+            $.ajax({
+                url: "FacultyServlet?action=add",
+                type: "POST",
+                data: {
+                    name: name,
+                    designation: designation,
+                    department: department,
+                    email: email,
+                    phone: phone,
+                    date_of_joining: dateOfJoining
+                },
+                success: function () {
+                    // Reload faculties after adding a new faculty
+                    loadFaculties();
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        // Function to handle form submission for updating faculty
+        function updateFaculty() {
+            var id = $("#updateId").val();
+            var name = $("#updateName").val();
+            var designation = $("#updateDesignation").val();
+            var department = $("#updateDepartment").val();
+            var email = $("#updateEmail").val();
+            var phone = $("#            updatePhone").val();
+            var dateOfJoining = $("#updateDateOfJoining").val();
+
+            $.ajax({
+                url: "FacultyServlet?action=update",
+                type: "POST",
+                data: {
+                    id: id,
+                    name: name,
+                    designation: designation,
+                    department: department,
+                    email: email,
+                    phone: phone,
+                    date_of_joining: dateOfJoining
+                },
+                success: function () {
+                    // Reload faculties after updating faculty
+                    loadFaculties();
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        // Function to handle delete faculty action
+        function deleteFaculty(id) {
+            $.ajax({
+                url: "FacultyServlet?action=delete",
+                type: "POST",
+                data: {
+                    id: id
+                },
+                success: function () {
+                    // Reload faculties after deleting faculty
+                    loadFaculties();
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Faculty Management</h1>
+
+    <h2>Add Faculty</h2>
+    <form id="addForm" onsubmit="event.preventDefault(); addFaculty();">
+        <input type="text" id="name" placeholder="Name" required>
+        <input type="text" id="designation" placeholder="Designation" required>
+        <input type="text" id="department" placeholder="Department" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="text" id="phone" placeholder="Phone" required>
+        <input type="date" id="dateOfJoining" placeholder="Date of Joining" required>
+        <button type="submit">Add Faculty</button>
+    </form>
+
+    <h2>Faculty List</h2>
+    <table id="facultyTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Department</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Date of Joining</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        // Load faculties on page load
+        $(document).ready(function () {
+            loadFaculties();
+        });
+    </script>
+</body>
+</html>
+

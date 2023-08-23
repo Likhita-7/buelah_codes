@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee CRUD</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Employee CRUD</h1>
+    <form>
+    <label for="ID">ID:</label>
+        <input type="text" id="id" />
+        <div>
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" />
+        </div>
+        <div>
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" />
+        </div>
+        <div>
+            <label for="email">Job:</label>
+            <input type="email" id="email" />
+        </div>
+        <button type="button" onclick="saveRecord()">Save</button>
+        <button type="button" onclick="fetchFirstRecord()">First</button>
+        <button type="button" onclick="fetchNextRecord()">Next</button>
+        <button type="button" onclick="fetchPreviousRecord()">Previous</button>
+        <button type="button" onclick="deleteRecord()">Delete</button>
+        <button type="button" onclick="updateRecord()">Update</button>
+    </form>
+
+    <script>
+        // Fetch First Record
+        function fetchFirstRecord() {
+            $.ajax({
+                url: "FetchFirstRecordServlet",
+                type: "GET",
+                success: function (response) {
+                    if (response) {
+                      
+                        var employeeDetails = response.split(",");
+                        var id = employeeDetails[0];
+                        var firstName = employeeDetails[1];
+                        var lastName = employeeDetails[2];
+                        var Email = employeeDetails[3];
+
+                       
+                        $("#id").val(id);
+                        $("#firstName").val(firstName);
+                        $("#lastName").val(lastName);
+                        $("#email").val(Email);
+                    } else {
+                        alert("No records found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while fetching the record: " + error);
+                }
+            });
+        }
+
+        // Fetch Next Record
+        function fetchNextRecord() {
+            var id = $("#id").val();
+            $.ajax({
+                url: "FetchNextRecordServlet",
+                type: "GET",
+                data: { id: id },
+                success: function (response) {
+                    if (response) {
+                      
+                        var employeeDetails = response.split(",");
+                        var id = employeeDetails[0];
+                        var firstName = employeeDetails[1];
+                        var lastName = employeeDetails[2];
+                        var Email = employeeDetails[3];
+
+                        $("#id").val(id);
+                        $("#firstName").val(firstName);
+                        $("#lastName").val(lastName);
+                        $("#email").val(Email);
+                    } else {
+                        alert("No more records found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while fetching the record: " + error);
+                }
+            });
+        }
+
+        // Fetch Previous Record
+        function fetchPreviousRecord() {
+            var id = $("#id").val();
+            $.ajax({
+                url: "FetchPreviousRecordServlet",
+                type: "GET",
+                data: { id: id },
+                success: function (response) {
+                    if (response) {
+                        var employeeDetails = response.split(",");
+                        var id = employeeDetails[0];
+                        var firstName = employeeDetails[1];
+                        var lastName = employeeDetails[2];
+                        var Email = employeeDetails[3];
+
+                        // Update the labels with employee details
+                        $("#id").val(id);
+                        $("#firstName").val(firstName);
+                        $("#lastName").val(lastName);
+                        $("#email").val(Email);
+                    } else {
+                        alert("No more records found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while fetching the record: " + error);
+                }
+            });
+        }
+
+        // Delete Record
+               // Delete Record
+        function deleteRecord() {
+            var id = $("#id").val();
+            $.ajax({
+                url: "DeleteRecordServlet",
+                type: "POST",
+                data: { id: id },
+                success: function (response) {
+                    if (response === "success") {
+                        // Clear form fields
+                        $("#id").val("");
+                        $("#firstName").val("");
+                        $("#lastName").val("");
+                        $("#email").val("");
+                        alert("Record deleted successfully.");
+                    } else {
+                        alert("Failed to delete the record.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while deleting the record: " + error);
+                }
+            });
+        }
+
+        // Update Record
+        function updateRecord() {
+            var id = $("#id").val();
+            var firstName = $("#firstName").val();
+            var lastName = $("#lastName").val();
+            var email = $("#email").val();
+
+            $.ajax({
+                url: "UpdateRecordServlet",
+                type: "POST",
+                data: {
+                    id: id,
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email
+                },
+                success: function (response) {
+                    if (response === "Success") {
+                        alert("Record updated successfully.");
+                    } else {
+                        alert("Failed to update the record.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while updating the record: " + error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+
